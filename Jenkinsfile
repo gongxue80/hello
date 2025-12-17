@@ -55,6 +55,8 @@ pipeline {
                     echo "语言: ${params.LANGUAGE}"
                     echo "环境: ${params.ENVIRONMENT}"
                     echo "使用 Docker: ${params.USE_DOCKER}"
+                    echo "运行测试: ${params.RUN_TESTS}"
+                    echo "在 Web App 中构建: ${params.BUILD_IN_WEB_APP}"
 
                     // 初始化共享库
                     utils()
