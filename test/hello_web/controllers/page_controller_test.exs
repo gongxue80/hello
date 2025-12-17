@@ -3,6 +3,6 @@ defmodule HelloWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")
-    assert html_response(conn, 200) =~ "Peace of mind from prototype to production"
+    assert html_response(conn, 200) =~ "Phoenix LiveView + TailwindCSS + SQLite + Elixir"
   end
 end
