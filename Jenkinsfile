@@ -25,6 +25,11 @@ pipeline {
             description: '是否运行测试'
         )
         booleanParam(
+            name: 'CHECK_CODE_STYLE',
+            defaultValue: true,
+            description: '是否检查代码风格'
+        )
+        booleanParam(
             name: 'BUILD_IN_WEB_APP',
             defaultValue: false,
             description: '是否在 Web App 中构建（仅适用于 Elixir）'
@@ -73,6 +78,9 @@ pipeline {
         }
 
         stage('代码检查') {
+            when {
+                expression { params.CHECK_CODE_STYLE.toString() == 'true' || params.CHECK_CODE_STYLE == true }
+            }
             steps {
                 script {
                     test.runLint(params.LANGUAGE)
