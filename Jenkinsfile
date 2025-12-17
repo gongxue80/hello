@@ -37,6 +37,10 @@ pipeline {
         disableConcurrentBuilds()
     }
 
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+
     environment {
         // 可以在这里设置环境变量
         ELIXIR_VERSION = '1.19.4-otp-28'
