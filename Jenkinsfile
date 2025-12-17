@@ -24,6 +24,11 @@ pipeline {
             defaultValue: true,
             description: '是否运行测试'
         )
+        booleanParam(
+            name: 'BUILD_IN_WEB_APP',
+            defaultValue: false,
+            description: '是否在 Web App 中构建（仅适用于 Elixir）'
+        )
     }
 
     options {
