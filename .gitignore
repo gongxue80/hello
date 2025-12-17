@@ -35,3 +35,6 @@ hello-*.tar
 npm-debug.log
 /assets/node_modules/
 
+hello_*.db
+hello_*.db-shm
+hello_*.db-wal
