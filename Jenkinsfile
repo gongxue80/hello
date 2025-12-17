@@ -71,7 +71,7 @@ pipeline {
 
         stage('测试') {
             when {
-                expression { params.RUN_TESTS == 'true' }
+                expression { params.RUN_TESTS.toString() == 'true' || params.RUN_TESTS == true }
             }
             steps {
                 script {
@@ -89,9 +89,6 @@ pipeline {
         }
 
         stage('部署') {
-            when {
-                expression { params.ENVIRONMENT != 'dev' }
-            }
             steps {
                 script {
                     deploy.deployProject(params.LANGUAGE, params.ENVIRONMENT)
