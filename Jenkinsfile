@@ -69,14 +69,6 @@ pipeline {
             }
         }
 
-        stage('构建') {
-            steps {
-                script {
-                    build.buildProject(params.LANGUAGE)
-                }
-            }
-        }
-
         stage('测试') {
             when {
                 expression { params.RUN_TESTS == 'true' }
@@ -84,6 +76,14 @@ pipeline {
             steps {
                 script {
                     test.runTests(params.LANGUAGE)
+                }
+            }
+        }
+
+        stage('构建') {
+            steps {
+                script {
+                    build.buildProject(params.LANGUAGE)
                 }
             }
         }
