@@ -6,11 +6,13 @@ pipeline {
     parameters {
         gitParameter(
             branchFilter: 'origin/.*',
+            tagFilter: 'v.*',
             defaultValue: 'main',
             name: 'BRANCH',
             type: 'PT_BRANCH_TAG',
             selectedValue: 'DEFAULT',
             sortMode: 'DESCENDING_SMART',
+            quickFilterEnabled: true,
             description: '选择要构建的分支或标签'
         )
         choice(
@@ -81,10 +83,6 @@ pipeline {
 
                     // 初始化共享库
                     utils()
-                    dir('project') {
-                        checkout scmGit(branches: [[name: params.BRANCH]],
-                            userRemoteConfigs: [[url: env.GIT_URL]])
-                    }
                 }
             }
         }
