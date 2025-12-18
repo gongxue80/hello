@@ -165,7 +165,7 @@ pipeline {
         always {
             script {
                 echo "流水线执行完成"
-                utils.cleanupWorkspace()
+                utils.cleanWorkspace()
             }
         }
         success {
