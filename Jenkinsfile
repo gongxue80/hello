@@ -15,6 +15,11 @@ pipeline {
             quickFilterEnabled: true,
             description: '选择要构建的分支或标签'
         )
+        string(
+            name: 'VERSION',
+            defaultValue: '',
+            description: '版本号（留空则从项目文件自动读取）'
+        )
         choice(
             name: 'LANGUAGE',
             choices: ['elixir', 'node', 'go', 'python'],
@@ -138,7 +143,8 @@ pipeline {
             }
             steps {
                 script {
-                    build.buildProject(params.LANGUAGE)
+                    def version = params.VERSION?.trim()
+                    build.buildProject(params.LANGUAGE, version)
                 }
             }
         }
