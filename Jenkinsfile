@@ -50,6 +50,12 @@ pipeline {
             defaultValue: false,
             description: '是否在 Web App 中构建（仅适用于 Elixir）'
         )
+        choice(
+            name: 'CLEANUP_STRATEGY',
+            choices: ['smart', 'full', 'none'],
+            defaultValue: 'smart',
+            description: '清理策略：smart=智能清理（保留缓存），full=完全清理，none=不清理'
+        )
     }
 
     options {
@@ -77,6 +83,7 @@ pipeline {
                     echo "分支: ${params.BRANCH}"
                     echo "语言: ${params.LANGUAGE}"
                     echo "环境: ${params.ENVIRONMENT}"
+                    echo "清理策略: ${params.CLEANUP_STRATEGY}"
                     echo "使用 Docker: ${params.USE_DOCKER}"
                     echo "运行测试: ${params.RUN_TESTS}"
                     echo "在 Web App 中构建: ${params.BUILD_IN_WEB_APP}"
@@ -153,7 +160,7 @@ pipeline {
         always {
             script {
                 echo "流水线执行完成"
-                cleanWs()
+                utils.cleanupWorkspace()
             }
         }
         success {
