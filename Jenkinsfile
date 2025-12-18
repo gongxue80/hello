@@ -24,8 +24,8 @@ pipeline {
             description: '选择部署环境'
         )
         choice(
-            name: 'ACTION'
-            choices: ['build-and-deploy', 'build-only', 'deploy-only']
+            name: 'ACTION',
+            choices: ['build-and-deploy', 'build-only', 'deploy-only'],
             description: '执行动作'
         )
         booleanParam(
