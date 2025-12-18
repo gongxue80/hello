@@ -10,7 +10,7 @@ pipeline {
             name: 'BRANCH',
             type: 'PT_BRANCH_TAG',
             selectedValue: 'DEFAULT',
-            sortMode: 'DESCENDING_SMART'
+            sortMode: 'DESCENDING_SMART',
             description: '选择要构建的分支或标签'
         )
         choice(
