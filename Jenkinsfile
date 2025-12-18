@@ -164,7 +164,6 @@ pipeline {
             }
             steps {
                 script {
-                    sh 'ls -alh shared-lib'
                     deploy.deployProject(params.LANGUAGE, params.ENVIRONMENT)
                 }
             }
