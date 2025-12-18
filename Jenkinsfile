@@ -4,6 +4,15 @@ pipeline {
     agent any
 
     parameters {
+        gitParameter(
+            branchFilter: 'origin/.*',
+            defaultValue: 'main',
+            name: 'BRANCH',
+            type: 'PT_BRANCH_TAG',
+            selectedValue: 'DEFAULT',
+            sortMode: 'DESCENDING_SMART'
+            description: '选择要构建的分支或标签'
+        )
         choice(
             name: 'LANGUAGE',
             choices: ['elixir', 'node', 'go', 'python'],
@@ -13,6 +22,11 @@ pipeline {
             name: 'ENVIRONMENT',
             choices: ['sit', 'dev', 'prod', 'oversea-sit', 'oversea-prod'],
             description: '选择部署环境'
+        )
+        choice(
+            name: 'ACTION'
+            choices: ['build-and-deploy', 'build-only', 'deploy-only']
+            description: '执行动作'
         )
         booleanParam(
             name: 'USE_DOCKER',
@@ -57,6 +71,8 @@ pipeline {
             steps {
                 script {
                     echo "开始执行流水线..."
+                    echo "项目仓库： ${env.GIT_URL}"
+                    echo "分支: ${params.BRANCH}"
                     echo "语言: ${params.LANGUAGE}"
                     echo "环境: ${params.ENVIRONMENT}"
                     echo "使用 Docker: ${params.USE_DOCKER}"
@@ -65,11 +81,18 @@ pipeline {
 
                     // 初始化共享库
                     utils()
+                    dir('project') {
+                        checkout scmGit(branches: [[name: params.BRANCH]],
+                            userRemoteConfigs: [[url: env.GIT_URL]])
+                    }
                 }
             }
         }
 
         stage('环境设置') {
+            when {
+                expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'build-only' }
+            }
             steps {
                 script {
                     utils.setupEnvironment(params.LANGUAGE)
@@ -79,7 +102,10 @@ pipeline {
 
         stage('代码检查') {
             when {
-                expression { params.CHECK_CODE_STYLE.toString() == 'true' || params.CHECK_CODE_STYLE == true }
+                allOf {
+                    expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'build-only' }
+                    expression { params.CHECK_CODE_STYLE.toString() == 'true' || params.CHECK_CODE_STYLE == true }
+                }
             }
             steps {
                 script {
@@ -90,7 +116,10 @@ pipeline {
 
         stage('测试') {
             when {
-                expression { params.RUN_TESTS.toString() == 'true' || params.RUN_TESTS == true }
+                allOf {
+                    expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'build-only' }
+                    expression { params.RUN_TESTS.toString() == 'true' || params.RUN_TESTS == true }
+                }
             }
             steps {
                 script {
@@ -100,6 +129,9 @@ pipeline {
         }
 
         stage('构建') {
+            when {
+                expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'build-only' }
+            }
             steps {
                 script {
                     build.buildProject(params.LANGUAGE)
@@ -108,6 +140,9 @@ pipeline {
         }
 
         stage('部署') {
+            when {
+                expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'deploy-only' }
+            }
             steps {
                 script {
                     deploy.deployProject(params.LANGUAGE, params.ENVIRONMENT)
