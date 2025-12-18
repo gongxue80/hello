@@ -95,11 +95,14 @@ pipeline {
                     // 初始化共享库
                     utils()
 
-                    git(
-                        url: 'git@github.com:choice-form/jenkins-shared-library.git',
-                        branch: 'main',
-                        credentialsId: 'github_ssh'
-                    )
+                    // 使用dir步骤确保工作目录不变
+                    dir('shared-lib') {
+                        git(
+                            url: 'git@github.com:choice-form/jenkins-shared-library.git',
+                            branch: 'main',
+                            credentialsId: 'github_ssh'
+                        )
+                    }
                 }
             }
         }
