@@ -27,7 +27,7 @@ pipeline {
         )
         choice(
             name: 'ENVIRONMENT',
-            choices: ['sit', 'dev', 'prod', 'oversea-sit', 'oversea-prod'],
+            choices: ['dev', 'sit', 'prod', 'oversea-sit', 'oversea-prod'],
             description: '选择部署环境'
         )
         choice(
