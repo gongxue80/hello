@@ -94,11 +94,20 @@ pipeline {
 
                     // 初始化共享库
                     utils()
+
+                    git(
+                        url: 'git@github.com:choice-form/jenkins-shared-library.git',
+                        branch: 'main',
+                        credentialsId: 'github_ssh'
+                    )
                 }
             }
         }
 
         stage('环境设置') {
+            when {
+                expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'build-only' }
+            }
             steps {
                 script {
                     utils.setupEnvironment(params.LANGUAGE)
