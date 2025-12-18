@@ -99,9 +99,6 @@ pipeline {
         }
 
         stage('环境设置') {
-            when {
-                expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'build-only' }
-            }
             steps {
                 script {
                     utils.setupEnvironment(params.LANGUAGE)
