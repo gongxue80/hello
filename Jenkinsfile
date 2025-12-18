@@ -164,6 +164,7 @@ pipeline {
             }
             steps {
                 script {
+                    sh 'ls -alh'
                     deploy.deployProject(params.LANGUAGE, params.ENVIRONMENT)
                 }
             }
