@@ -53,7 +53,6 @@ pipeline {
         choice(
             name: 'CLEANUP_STRATEGY',
             choices: ['smart', 'full', 'none'],
-            defaultValue: 'smart',
             description: '清理策略：smart=智能清理（保留缓存），full=完全清理，none=不清理'
         )
     }
