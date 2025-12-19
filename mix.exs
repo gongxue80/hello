@@ -4,7 +4,7 @@ defmodule Hello.MixProject do
   def project do
     [
       app: :hello,
-      version: "0.1.1-dev",
+      version: "0.1.2-dev",
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
