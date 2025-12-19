@@ -20,7 +20,8 @@ if System.get_env("PHX_SERVER") do
   config :hello, HelloWeb.Endpoint, server: true
 end
 
-port = System.get_env("PORT", "4000") |> String.to_integer()
+port = System.get_env("PORT", "4001") |> String.to_integer()
+config :hello_web, HelloWeb.Endpoint, http: [port: port]
 
 if config_env() == :prod do
   config :hello, Hello.Repo, database: Path.expand("../hello_prod.db", __DIR__)
@@ -47,8 +48,7 @@ if config_env() == :prod do
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
       # See the documentation on https://hexdocs.pm/bandit/Bandit.html#t:options/0
       # for details about using IPv6 vs IPv4 and loopback vs public addresses.
-      ip: {0, 0, 0, 0},
-      port: port
+      ip: {0, 0, 0, 0}
     ],
     secret_key_base: secret_key_base
 
