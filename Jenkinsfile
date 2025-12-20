@@ -76,12 +76,10 @@ pipeline {
         stage('初始化') {
             steps {
                 script {
-                    env.LANGUAGE = utils.checkLanguage()
                     echo "开始执行流水线..."
                     echo "项目仓库： ${env.GIT_URL}"
                     echo "分支: ${params.BRANCH}"
                     echo "环境: ${params.ENVIRONMENT}"
-                    echo "语言：${env.LANGUAGE}"
                     echo "动作: ${params.ACTION}"
                     echo "清理策略: ${params.CLEANUP_STRATEGY}"
                     echo "使用 Docker: ${params.USE_DOCKER}"
@@ -109,7 +107,7 @@ pipeline {
             }
             steps {
                 script {
-                    utils.setupEnvironment(env.LANGUAGE)
+                    utils.setupEnvironment()
                 }
             }
         }
@@ -123,7 +121,7 @@ pipeline {
             }
             steps {
                 script {
-                    test.runLint(env.LANGUAGE)
+                    test.runLint()
                 }
             }
         }
@@ -137,7 +135,7 @@ pipeline {
             }
             steps {
                 script {
-                    test.runTests(env.LANGUAGE)
+                    test.runTests()
                 }
             }
         }
@@ -159,7 +157,7 @@ pipeline {
             }
             steps {
                 script {
-                    deploy.deployProject(env.LANGUAGE, params.ENVIRONMENT)
+                    deploy.deployProject(params.ENVIRONMENT)
                 }
             }
         }
