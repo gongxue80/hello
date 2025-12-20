@@ -21,11 +21,6 @@ pipeline {
             description: '版本号（留空则从项目文件自动读取）'
         )
         choice(
-            name: 'LANGUAGE',
-            choices: ['elixir', 'node', 'go', 'python'],
-            description: '选择项目语言'
-        )
-        choice(
             name: 'ENVIRONMENT',
             choices: ['dev', 'sit', 'prod', 'oversea-sit', 'oversea-prod'],
             description: '选择部署环境'
@@ -153,8 +148,7 @@ pipeline {
             }
             steps {
                 script {
-                    def version = params.VERSION?.trim()
-                    build.buildProject(params.LANGUAGE, version)
+                    build.buildProject()
                 }
             }
         }
