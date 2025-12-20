@@ -67,9 +67,10 @@ pipeline {
         pollSCM('H/5 * * * *')
     }
 
-    environment {
-        // 可以在这里设置环境变量
-    }
+    // environment {
+    //     // 可以在这里设置环境变量
+
+    // }
 
     stages {
         stage('初始化') {
