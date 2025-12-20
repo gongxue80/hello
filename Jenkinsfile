@@ -80,7 +80,6 @@ pipeline {
                     echo "开始执行流水线..."
                     echo "项目仓库： ${env.GIT_URL}"
                     echo "分支: ${params.BRANCH}"
-                    echo "语言: ${params.LANGUAGE}"
                     echo "环境: ${params.ENVIRONMENT}"
                     echo "动作: ${params.ACTION}"
                     echo "清理策略: ${params.CLEANUP_STRATEGY}"
