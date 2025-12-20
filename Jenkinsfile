@@ -69,18 +69,18 @@ pipeline {
 
     environment {
         // 可以在这里设置环境变量
-        ELIXIR_VERSION = '1.19.4-otp-28'
-        ERLANG_VERSION = '28.1.1'
     }
 
     stages {
         stage('初始化') {
             steps {
                 script {
+                    env.LANGUAGE = utils.checkLanguage()
                     echo "开始执行流水线..."
                     echo "项目仓库： ${env.GIT_URL}"
                     echo "分支: ${params.BRANCH}"
                     echo "环境: ${params.ENVIRONMENT}"
+                    echo "语言：${env.LANGUAGE}"
                     echo "动作: ${params.ACTION}"
                     echo "清理策略: ${params.CLEANUP_STRATEGY}"
                     echo "使用 Docker: ${params.USE_DOCKER}"
@@ -108,7 +108,7 @@ pipeline {
             }
             steps {
                 script {
-                    utils.setupEnvironment(params.LANGUAGE)
+                    utils.setupEnvironment(env.LANGUAGE)
                 }
             }
         }
@@ -122,7 +122,7 @@ pipeline {
             }
             steps {
                 script {
-                    test.runLint(params.LANGUAGE)
+                    test.runLint(env.LANGUAGE)
                 }
             }
         }
@@ -136,7 +136,7 @@ pipeline {
             }
             steps {
                 script {
-                    test.runTests(params.LANGUAGE)
+                    test.runTests(env.LANGUAGE)
                 }
             }
         }
@@ -158,7 +158,7 @@ pipeline {
             }
             steps {
                 script {
-                    deploy.deployProject(params.LANGUAGE, params.ENVIRONMENT)
+                    deploy.deployProject(env.LANGUAGE, params.ENVIRONMENT)
                 }
             }
         }
