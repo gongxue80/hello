@@ -45,11 +45,7 @@ pipeline {
             defaultValue: true,
             description: '是否检查代码风格'
         )
-        booleanParam(
-            name: 'BUILD_IN_WEB_APP',
-            defaultValue: false,
-            description: '是否在 Web App 中构建（仅适用于 Elixir）'
-        )
+
         choice(
             name: 'CLEANUP_STRATEGY',
             choices: ['none', 'full', 'smart'],
@@ -85,7 +81,6 @@ pipeline {
                     echo "清理策略: ${params.CLEANUP_STRATEGY}"
                     echo "使用 Docker: ${params.USE_DOCKER}"
                     echo "运行测试: ${params.RUN_TESTS}"
-                    echo "在 Web App 中构建: ${params.BUILD_IN_WEB_APP}"
 
                     // 初始化共享库
                     utils()
