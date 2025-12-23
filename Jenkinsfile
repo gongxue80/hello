@@ -181,7 +181,7 @@ pipeline {
                     build.buildProject()
                 }
             }
-        }/
+        }
 
         stage('生产部署验证') {
             when {
