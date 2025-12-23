@@ -1,4 +1,4 @@
-@Library('multi-language-pipeline') _
+@Library('multi-language-pipeline@v0.1.0') _
 
 pipeline {
     agent any
@@ -64,6 +64,11 @@ pipeline {
             name: 'TARGET_HOSTS',
             defaultValue: '',
             description: '部署的目标服务器 target_hosts（多个用英文逗号分隔，留空则使用默认配置）'
+        )
+        password(
+            name: 'PROD_DEPLOY_PASSWORD',
+            defaultValue: '',
+            description: '生产环境部署密码（仅在部署到生产环境时需要）'
         )
     }
 
@@ -174,6 +179,23 @@ pipeline {
             steps {
                 script {
                     build.buildProject()
+                }
+            }
+        }
+
+        stage('生产部署验证') {
+            when {
+                allOf {
+                    expression { env.EFFECTIVE_ACTION.toString() == 'build-and-deploy' || env.EFFECTIVE_ACTION.toString() == 'deploy-only' }
+                    expression { params.TARGET_ENV == '生产 prod' || params.TARGET_ENV == '海外生产 oversea-prod' }
+                }
+            }
+            steps {
+                script {
+                    // 使用 utils 函数验证生产部署密码
+                    utils.validateProdDeployPassword(params.PROD_DEPLOY_PASSWORD)
+
+                    echo "正在部署到生产环境: ${params.TARGET_ENV}"
                 }
             }
         }
