@@ -1,4 +1,4 @@
-@Library('multi-language-pipeline@v0.1.0') _
+@Library('multi-language-pipeline') _
 
 pipeline {
     agent any
