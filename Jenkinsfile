@@ -45,11 +45,25 @@ pipeline {
             defaultValue: true,
             description: '是否检查代码风格'
         )
-
         choice(
             name: 'CLEANUP_STRATEGY',
             choices: ['none', 'full', 'smart'],
             description: '清理策略：smart=智能清理（保留缓存），full=完全清理，none=不清理'
+        )
+        string(
+            name: 'PRE_BUILD_CONFIG_IDS',
+            defaultValue: '',
+            description: '编译前的配置文件 ids（多个用英文逗号分隔，留空则使用默认配置）'
+        )
+        string(
+            name: 'POST_BUILD_CONFIG_IDS',
+            defaultValue: '',
+            description: '运行时的配置文件 ids（多个用英文逗号分隔，留空则使用默认配置）'
+        )
+        string(
+            name: 'TARGET_HOSTS',
+            defaultValue: '',
+            description: '部署的目标服务器 target_hosts（多个用英文逗号分隔，留空则使用默认配置）'
         )
     }
 
@@ -81,6 +95,16 @@ pipeline {
                     echo "清理策略: ${params.CLEANUP_STRATEGY}"
                     echo "使用 Docker: ${params.USE_DOCKER}"
                     echo "运行测试: ${params.RUN_TESTS}"
+                    echo "编译前配置文件: ${params.PRE_BUILD_CONFIG_IDS ?: '未配置'}"
+                    echo "运行时配置文件: ${params.POST_BUILD_CONFIG_IDS ?: '未配置'}"
+                    echo "目标服务器: ${params.TARGET_HOSTS ?: '未配置'}"
+
+                    // 如果定义了版本号，则跳过构建直接部署
+                    if (params.VERSION && params.VERSION.trim()) {
+                        echo "检测到版本号已定义: ${params.VERSION}，自动切换到仅部署模式"
+                        params.ACTION = 'deploy-only'
+                        echo "动作已自动调整为: ${params.ACTION}"
+                    }
 
                     // 初始化共享库
                     utils()
