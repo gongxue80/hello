@@ -99,12 +99,18 @@ pipeline {
                     echo "运行时配置文件: ${params.POST_BUILD_CONFIG_IDS ?: '未配置'}"
                     echo "目标服务器: ${params.TARGET_HOSTS ?: '未配置'}"
 
+                    // 计算实际执行的动作
+                    def effectiveAction = params.ACTION
+
                     // 如果定义了版本号，则跳过构建直接部署
                     if (params.VERSION && params.VERSION.trim()) {
                         echo "检测到版本号已定义: ${params.VERSION}，自动切换到仅部署模式"
-                        params.ACTION = 'deploy-only'
-                        echo "动作已自动调整为: ${params.ACTION}"
+                        effectiveAction = 'deploy-only'
+                        echo "动作已自动调整为: ${effectiveAction}"
                     }
+
+                    // 将有效动作存储为环境变量，供后续阶段使用
+                    env.EFFECTIVE_ACTION = effectiveAction
 
                     // 初始化共享库
                     utils()
@@ -124,7 +130,7 @@ pipeline {
 
         stage('环境设置') {
             when {
-                expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'build-only' }
+                expression { env.EFFECTIVE_ACTION.toString() == 'build-and-deploy' || env.EFFECTIVE_ACTION.toString() == 'build-only' }
             }
             steps {
                 script {
@@ -136,7 +142,7 @@ pipeline {
         stage('代码检查') {
             when {
                 allOf {
-                    expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'build-only' }
+                    expression { env.EFFECTIVE_ACTION.toString() == 'build-and-deploy' || env.EFFECTIVE_ACTION.toString() == 'build-only' }
                     expression { params.CHECK_CODE_STYLE.toString() == 'true' || params.CHECK_CODE_STYLE == true }
                 }
             }
@@ -150,7 +156,7 @@ pipeline {
         stage('测试') {
             when {
                 allOf {
-                    expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'build-only' }
+                    expression { env.EFFECTIVE_ACTION.toString() == 'build-and-deploy' || env.EFFECTIVE_ACTION.toString() == 'build-only' }
                     expression { params.RUN_TESTS.toString() == 'true' || params.RUN_TESTS == true }
                 }
             }
@@ -163,7 +169,7 @@ pipeline {
 
         stage('构建') {
             when {
-                expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'build-only' }
+                expression { env.EFFECTIVE_ACTION.toString() == 'build-and-deploy' || env.EFFECTIVE_ACTION.toString() == 'build-only' }
             }
             steps {
                 script {
@@ -174,7 +180,7 @@ pipeline {
 
         stage('部署') {
             when {
-                expression { params.ACTION.toString() == 'build-and-deploy' || params.ACTION.toString() == 'deploy-only' }
+                expression { env.EFFECTIVE_ACTION.toString() == 'build-and-deploy' || env.EFFECTIVE_ACTION.toString() == 'deploy-only' }
             }
             steps {
                 script {
