@@ -18,11 +18,11 @@ pipeline {
         string(
             name: 'VERSION',
             defaultValue: '',
-            description: '版本号（留空则从项目文件自动读取）'
+            description: '版本号（留空则自动生成），一般指 BUILD_NUMBER'
         )
         choice(
-            name: 'ENVIRONMENT',
-            choices: ['dev', 'sit', 'prod', 'oversea-sit', 'oversea-prod'],
+            name: 'TARGET_ENV',
+            choices: ['线上开发 dev', '演示 sit', '生产 prod', '海外演示 oversea-sit', '海外生产 oversea-prod'],
             description: '选择部署环境'
         )
         choice(
@@ -79,7 +79,8 @@ pipeline {
                     echo "开始执行流水线..."
                     echo "项目仓库： ${env.GIT_URL}"
                     echo "分支: ${params.BRANCH}"
-                    echo "环境: ${params.ENVIRONMENT}"
+                    echo "环境: ${env.TARGET_ENV}"
+                    echo "版本： ${params.VERSION ?: '未配置'}"
                     echo "动作: ${params.ACTION}"
                     echo "清理策略: ${params.CLEANUP_STRATEGY}"
                     echo "使用 Docker: ${params.USE_DOCKER}"
@@ -88,6 +89,7 @@ pipeline {
 
                     // 初始化共享库
                     utils()
+                    env.ENVIRONMENT = getEnvName()
 
                     // 使用dir步骤确保工作目录不变
                     dir('shared-lib') {
@@ -157,7 +159,7 @@ pipeline {
             }
             steps {
                 script {
-                    deploy.deployProject(params.ENVIRONMENT)
+                    deploy.deployProject()
                 }
             }
         }
