@@ -56,7 +56,7 @@ pipeline {
             description: '编译前的配置文件 ids（多个用英文逗号分隔，留空则使用默认配置）'
         )
         string(
-            name: 'POST_BUILD_CONFIG_IDS',
+            name: 'POST_RUNTIME_CONFIG_IDS',
             defaultValue: '',
             description: '运行时的配置文件 ids（多个用英文逗号分隔，留空则使用默认配置）'
         )
@@ -101,7 +101,7 @@ pipeline {
                     echo "使用 Docker: ${params.USE_DOCKER}"
                     echo "运行测试: ${params.RUN_TESTS}"
                     echo "编译前配置文件: ${params.PRE_BUILD_CONFIG_IDS ?: '未配置'}"
-                    echo "运行时配置文件: ${params.POST_BUILD_CONFIG_IDS ?: '未配置'}"
+                    echo "运行时配置文件: ${params.POST_RUNTIME_CONFIG_IDS ?: '未配置'}"
                     echo "目标服务器: ${params.TARGET_HOSTS ?: '未配置'}"
 
                     // 计算实际执行的动作
